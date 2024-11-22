@@ -2,13 +2,13 @@ const show = document.getElementById("show");
 const search = document.getElementById("search");
 const cityVal = document.getElementById("city");
 
-// Your OpenWeatherMap API Key
+
 const weatherApiKey = "2f745fa85d563da5adb87b6cd4b81caf";
 
-// Your Cohere API Key
-const cohereApiKey = "zlo3r2pUchbx5Lt30NhRlXUqlNraTZl3oqoovGyf";  // Replace with your Cohere API Key
 
-// Fetch the weather data for a given city
+const cohereApiKey = "zlo3r2pUchbx5Lt30NhRlXUqlNraTZl3oqoovGyf";  
+
+
 const getWeather = async (cityValue) => {
     try {
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityValue}&appid=${weatherApiKey}&units=metric`;
@@ -41,16 +41,16 @@ const getWeather = async (cityValue) => {
     }
 };
 
-// Process the weather query to extract the city name using Cohere
+
 const processQuery = async (query) => {
-    const apiUrl = "https://api.cohere.ai/v1/generate";  // Cohere's API endpoint
+    const apiUrl = "https://api.cohere.ai/v1/generate";  
 
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${cohereApiKey}`,  // Use your Cohere API Key here
+                Authorization: `Bearer ${cohereApiKey}`,  
             },
             body: JSON.stringify({
                 prompt: `Extract the name of the city from the following weather-related query: "${query}". Only return the city name.`,
@@ -59,27 +59,27 @@ const processQuery = async (query) => {
             }),
         });
 
-        // Check if the response is successful
+        
         if (!response.ok) {
             throw new Error(`Cohere API error: ${response.statusText}`);
         }
 
         const data = await response.json();
 
-        // Check if data contains the city name
+        
         if (data.generations && data.generations[0] && data.generations[0].text) {
-            const city = data.generations[0].text.trim();  // Extract the city name
+            const city = data.generations[0].text.trim();  
             return city;
         } else {
             throw new Error("City name not found in the response");
         }
     } catch (error) {
         console.error("Error processing the query with Cohere:", error);
-        return "";  // Return an empty string if there's an error
+        return ""; 
     }
 };
 
-// Handle the search input and process the query
+
 const handleSearch = async () => {
     const query = cityVal.value.trim();
     if (query.length === 0) {
@@ -90,7 +90,7 @@ const handleSearch = async () => {
     cityVal.value = "";
 
     if (query.toLowerCase().includes("weather")) {
-        // Process the query with Cohere to extract city
+      
         const city = await processQuery(query);
         if (city) {
             getWeather(city);
@@ -98,7 +98,7 @@ const handleSearch = async () => {
             show.innerHTML = `<h3 class="error">City not found in query</h3>`;
         }
     } else {
-        // If the query doesn't include "weather", treat it as a direct city input
+        
         getWeather(query);
     }
 };
@@ -106,7 +106,7 @@ const handleSearch = async () => {
 search.addEventListener("click", handleSearch);
 window.addEventListener("load", () => getWeather("VARANASI"));
 
-
+//Queries for testing
 //What is the weather like in New York?
 //Tell me the weather in Los Angeles
 //What's the weather?
